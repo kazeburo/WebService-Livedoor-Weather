@@ -2,74 +2,73 @@ package WebService::Livedoor::Weather;
 
 use strict;
 use warnings;
+use utf8;
 use Carp;
 use URI::Fetch;
 use XML::Simple;
+use JSON::XS;
+our $VERSION;
 
-our $VERSION = '0.02';
+BEGIN { $VERSION = '0.02_001' };
+
+use constant BASE_URI        => $ENV{LDWEATHER_BASE_URI} || 'http://weather.livedoor.com';
+use constant ENDPOINT_URI    => $ENV{LDWEATHER_ENDPOINT_URI} || BASE_URI. '/forecast/webservice/json/v1';
+use constant FORECASTMAP_URI => $ENV{LDWEATHER_FORECASTMAP_URI} || BASE_URI. '/forecast/rss/primary_area.xml';
+use constant USER_AGENT      => __PACKAGE__.'/'.$VERSION;
 
 sub new {
     my ( $class, %args ) = @_;
     $args{fetch} ||= {};
     $args{fetch} = {
-	%{$args{fetch}},
-        UserAgent => LWP::UserAgent->new( agent => "WebService::Livedoor::Weather/$VERSION" )
+        %{$args{fetch}},
+        UserAgent => LWP::UserAgent->new( agent => USER_AGENT )
     };
     bless \%args,$class;
 }
 
 sub get {
-    my $self = shift;
-    my ($city,$day) = @_;
+    my ($self, $city) = @_;
     croak('city is required') unless $city;
-    $day ||= 'today';
     my $cityid = $self->__get_cityid($city);
 
-    my $res = URI::Fetch->fetch("http://weather.livedoor.com/forecast/webservice/rest/v1?city=$cityid&day=$day", %{$self->{fetch}});
+    my $res = URI::Fetch->fetch(ENDPOINT_URI. "?city=$cityid", %{$self->{fetch}});
     croak("Cannot get weather information : " . URI::Fetch->errstr) unless $res;
 
     my $ref;
-    eval{$ref = XMLin($res->content)};
+    eval{$ref = decode_json($res->content)};
     croak('Oops! failed reading weather information : ' . $@) if $@;
 
-    #temperature fixing
-    ref $ref->{temperature}{max}{celsius} and $ref->{temperature}{max}{celsius} = undef;
-    ref $ref->{temperature}{min}{celsius} and $ref->{temperature}{min}{celsius} = undef;
-    ref $ref->{temperature}{max}{fahrenheit} and $ref->{temperature}{max}{fahrenheit} = undef;
-    ref $ref->{temperature}{min}{fahrenheit} and $ref->{temperature}{min}{fahrenheit} = undef;
+    ### temperature fixing for null case
+    for ( @{$ref->{forecasts}} ) {
+        ref $_->{temperature}{max}{celsius} and $_->{temperature}{max}{celsius} = undef;
+        ref $_->{temperature}{min}{celsius} and $_->{temperature}{min}{celsius} = undef;
+        ref $_->{temperature}{max}{fahrenheit} and $_->{temperature}{max}{fahrenheit} = undef;
+        ref $_->{temperature}{min}{fahrenheit} and $_->{temperature}{min}{fahrenheit} = undef;
+    }
 
     return $ref;
 }
 
 sub __get_cityid {
     my ($self,$city) = @_;
-    return $city if $city =~ /^\d+$/;
-
-    my $cityname = pack('C0A*',$city);
-    croak('Invalid city name. cannot find city id with ' . $city) 
-	unless exists $self->__forecastmap->{$cityname};
-
-    return $self->__forecastmap->{$cityname};
+    $city =~ /^\d+$/ ? $city : $self->__forecastmap->{$city} or carp('Invalid city name. cannot find city id with '. $city);
 }
 
-sub __forecastmap{
+sub __forecastmap {
     my $self = shift;
 
     return $self->{forecastmap} if $self->{forecastmap};
 
-    my $res = URI::Fetch->fetch('http://weather.livedoor.com/forecast/rss/forecastmap.xml', %{$self->{fetch}});
-    croak("Couldn't get forecastmap.xml : " . URI::Fetch->errstr) unless $res;
+    my $res = URI::Fetch->fetch(FORECASTMAP_URI, %{$self->{fetch}});
+    croak("Couldn't get forecastmap: " . URI::Fetch->errstr) unless $res;
 
     my $ref;
     eval{$ref = XMLin($res->content,ForceArray => [qw/pref area city/])};
-    croak('Oops! failed reading forecastmap.xml : ' . $@) if $@;
+    croak('Oops! failed reading forecastmap: ' . $@) if $@;
 
     my %forecastmap;
-    foreach my $area (@{$ref->{channel}->{'ldWeather:source'}->{area}}){
-	foreach my $pref (@{$area->{pref}}){
-	    $forecastmap{pack('C0A*',$pref->{city}->{$_}->{title})} = $_
-		for keys %{$pref->{city}};
-	}
+    foreach my $pref ( @{$ref->{channel}{'ldWeather:source'}{pref}} ){
+        $forecastmap{$pref->{city}{$_}{title}} = $_ for keys %{$pref->{city}};
     }
 
     $self->{forecastmap} = \%forecastmap;
