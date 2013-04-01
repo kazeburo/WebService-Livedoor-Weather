@@ -7,21 +7,18 @@ use Carp;
 use URI::Fetch;
 use XML::Simple;
 use JSON::XS;
-our $VERSION;
-
-BEGIN { $VERSION = '0.02_001' };
+our $VERSION = '0.02_001';
 
 use constant BASE_URI        => $ENV{LDWEATHER_BASE_URI} || 'http://weather.livedoor.com';
 use constant ENDPOINT_URI    => $ENV{LDWEATHER_ENDPOINT_URI} || BASE_URI. '/forecast/webservice/json/v1';
 use constant FORECASTMAP_URI => $ENV{LDWEATHER_FORECASTMAP_URI} || BASE_URI. '/forecast/rss/primary_area.xml';
-use constant USER_AGENT      => __PACKAGE__.'/'.$VERSION;
 
 sub new {
     my ( $class, %args ) = @_;
     $args{fetch} ||= {};
     $args{fetch} = {
         %{$args{fetch}},
-        UserAgent => LWP::UserAgent->new( agent => USER_AGENT )
+        UserAgent => LWP::UserAgent->new( agent => __PACKAGE__.'/'.$VERSION )
     };
     bless \%args,$class;
 }
