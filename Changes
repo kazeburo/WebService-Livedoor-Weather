@@ -1,0 +1,9 @@
+Revision history for Perl extension WebService::Livedoor::Weather.
+
+0.02 Thu Feb 2 16:44:33 2006
+        - {temperature}{min/max}{*} = undef if {temperature}{min/max}{*} is hash ref
+
+0.01  Fri Feb 10 11:11:26 2006
+	- original version; created by h2xs 1.23 with options
+		-XAn WebService::Livedoor::Weather
+
