@@ -31,8 +31,13 @@ sub get {
     my $res = URI::Fetch->fetch(ENDPOINT_URI. "?city=$cityid", %{$self->{fetch}});
     croak("Cannot get weather information : " . URI::Fetch->errstr) unless $res;
 
+    return $self->__parse_forecast($res->content);
+}
+
+sub __parse_forecast {
+    my ($self, $json) = @_;
     my $ref;
-    eval{$ref = decode_json($res->content)};
+    eval{$ref = decode_json($json)};
     croak('Oops! failed reading weather information : ' . $@) if $@;
 
     ### temperature fixing for null case
@@ -48,32 +53,38 @@ sub get {
 
 sub __get_cityid {
     my ($self,$city) = @_;
-    $city =~ /^\d+$/ ? $city : $self->__forecastmap->{$city} or carp('Invalid city name. cannot find city id with '. $city);
+    $city =~ /^\d+$/ ? $city : $self->__forecastmap->{$city} or croak('Invalid city name. cannot find city id with '. $city);
 }
 
 sub __forecastmap {
     my $self = shift;
+    unless ($self->{forecastmap}) {
+        my $res = URI::Fetch->fetch(FORECASTMAP_URI, %{$self->{fetch}});
+        croak("Couldn't get forecastmap: " . URI::Fetch->errstr) unless $res;
+        $self->{forecastmap} = $self->__parse_forecastmap($res->content);
+    }
+    return $self->{forecastmap};
+}
 
-    return $self->{forecastmap} if $self->{forecastmap};
+sub __parse_forecastmap {
+    my ($self, $str) = @_;
 
-    my $res = URI::Fetch->fetch(FORECASTMAP_URI, %{$self->{fetch}});
-    croak("Couldn't get forecastmap: " . URI::Fetch->errstr) unless $res;
-
-    my $ref;
-    eval{$ref = XMLin($res->content,ForceArray => [qw/pref area city/])};
-    croak('Oops! failed reading forecastmap: ' . $@) if $@;
-
+    my $ref = eval { XMLin($str, ForceArray => [qw[pref area city]]) };
+    if ($@) {
+        local $Carp::CarpLevel = 1;
+        croak('Oops! failed reading forecastmap: '. $@);
+    }
     my %forecastmap;
     foreach my $pref ( @{$ref->{channel}{'ldWeather:source'}{pref}} ){
         $forecastmap{$pref->{city}{$_}{title}} = $_ for keys %{$pref->{city}};
     }
-
-    $self->{forecastmap} = \%forecastmap;
-    return $self->{forecastmap};
+    return \%forecastmap;
 }
 
 1;
 __END__
+
+=encoding utf8
 
 =head1 NAME
 
@@ -84,7 +95,7 @@ WebService::Livedoor::Weather - Perl interface to Livedoor Weather Web Service
   use WebService::Livedoor::Weather;
 
   $lwws = WebService::Livedoor::Weather->new;
-  my $ret = $lwws->get('63','tomorrow'); #63 is tokyo
+  my $ret = $lwws->get('東京');
 
   print $ret->{title};
   print $ret->{description};
