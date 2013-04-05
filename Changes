@@ -1,5 +1,10 @@
 Revision history for Perl extension WebService::Livedoor::Weather.
 
+0.03 Fri Apr 5 17:50:39 2013
+        - update for supporting new interface
+                - Livedoor weather API changed its data-format from XML to JSON at April 1st, 2013.
+                  (See http://weather.livedoor.com/weather_hacks/webservice for more detail. [lang:ja])
+
 0.02 Thu Feb 2 16:44:33 2006
         - {temperature}{min/max}{*} = undef if {temperature}{min/max}{*} is hash ref
 

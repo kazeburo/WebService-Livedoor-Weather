@@ -7,7 +7,7 @@ use Carp;
 use URI::Fetch;
 use XML::Simple;
 use JSON::XS;
-our $VERSION = '0.02_001';
+our $VERSION = '0.03';
 
 use constant BASE_URI        => $ENV{LDWEATHER_BASE_URI} || 'http://weather.livedoor.com';
 use constant ENDPOINT_URI    => $ENV{LDWEATHER_ENDPOINT_URI} || BASE_URI. '/forecast/webservice/json/v1';
@@ -92,13 +92,18 @@ WebService::Livedoor::Weather - Perl interface to Livedoor Weather Web Service
 
 =head1 SYNOPSIS
 
+  use utf8;
   use WebService::Livedoor::Weather;
-
+  
+  binmode STDOUT, ':utf8';
+  
   $lwws = WebService::Livedoor::Weather->new;
-  my $ret = $lwws->get('東京');
-
-  print $ret->{title};
-  print $ret->{description};
+  
+  my $ret = $lwws->get('東京'); # forecast data for Tokyo.
+  ### or ...
+  $ret = $lwws->get('130010'); # '130010' is Tokyo's city_id. 
+  
+  printf "%s\n---\n%s\n", $ret->{title}, $ret->{description};
 
 =head1 DESCRIPTION
 
@@ -117,13 +122,13 @@ creates an instance of WebService::Livedoor::Weather.
 
 C<fetch> is option for URI::Fetch that used for fetching weather information.
 
-=item get(cityid or name,[day])
+=item get(cityid or name)
 
-    my $ret = $lwws->get('63','tomorrow'); #63 is tokyo
-    my $ret = $lwws->get('cityname','today');
+    my $ret = $lwws->get('63'); #63 is tokyo
+    my $ret = $lwws->get('cityname');
 
 retrieve weather.
-You can get a city id from http://weather.livedoor.com/forecast/rss/forecastmap.xml
+You can get a city id from http://weather.livedoor.com/forecast/rss/primary_area.xml
 
 =head1 SEE ALSO
 
@@ -132,7 +137,9 @@ http://weather.livedoor.com/weather_hacks/webservice.html (Japanese)
 
 =head1 AUTHOR
 
-Masahiro Nagano, E<lt>kazeburo@nomadscafe.jpE<gt>
+Original version by Masahiro Nagano, E<lt>kazeburo@nomadscafe.jpE<gt>
+
+Latest version by Satoshi Azuma, E<lt>ytnobody@gmail.comE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
