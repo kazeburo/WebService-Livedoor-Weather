@@ -40,12 +40,23 @@ for my $f (@{$forecast->{forecasts}}) {
     isa_ok $f, 'HASH';
     is_deeply [sort keys %$f], [qw[date dateLabel image telop temperature]];
 }
+is_deeply [map {$_->{dateLabel}} @{$forecast->{forecasts}}], ['今日', '明日', '明後日'];
 
 is $forecast->{link}, 'http://weather.livedoor.com/area/forecast/130010';
 
 isa_ok $forecast->{location}, 'HASH';
+is_deeply $forecast->{location}, {
+    city => "東京",
+    area =>  "関東",
+    prefecture => "東京都"
+};
 
 isa_ok $forecast->{pinpointLocations}, 'ARRAY';
+is scalar @{$forecast->{pinpointLocations}}, 53;
+for my $p (@{$forecast->{pinpointLocations}}) {
+    isa_ok $p, 'HASH';
+    is_deeply [sort keys %$p], ['link','name'];
+}
 
 is $forecast->{publicTime}, '2013-04-03T11:00:00+0900';
 
