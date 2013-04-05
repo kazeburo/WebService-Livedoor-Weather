@@ -6,7 +6,7 @@ use utf8;
 use Carp;
 use URI::Fetch;
 use XML::Simple;
-use JSON::XS;
+use JSON 2;
 our $VERSION = '0.03';
 
 use constant BASE_URI        => $ENV{LDWEATHER_BASE_URI} || 'http://weather.livedoor.com';

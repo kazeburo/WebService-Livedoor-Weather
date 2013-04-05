@@ -27,7 +27,7 @@ This module requires these other modules and libraries:
 
   URI::Fetch
   XML::Simple
-  JSON::XS
+  JSON
 
 COPYRIGHT AND LICENCE
 
