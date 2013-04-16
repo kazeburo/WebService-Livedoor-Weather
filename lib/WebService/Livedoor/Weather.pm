@@ -7,7 +7,7 @@ use Carp;
 use URI::Fetch;
 use XML::Simple;
 use JSON 2;
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 use constant BASE_URI        => $ENV{LDWEATHER_BASE_URI} || 'http://weather.livedoor.com';
 use constant ENDPOINT_URI    => $ENV{LDWEATHER_ENDPOINT_URI} || BASE_URI. '/forecast/webservice/json/v1';

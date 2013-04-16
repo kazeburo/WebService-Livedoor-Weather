@@ -7,7 +7,8 @@ WriteMakefile(
     PREREQ_PM         => {
 	'URI::Fetch' => 0,
 	'XML::Simple' => 0,
-        'JSON' => 0
+        'JSON' => 0,
+        'Test::Exception' => 0
     },
     ($] >= 5.005 ? 
       (ABSTRACT_FROM  => 'lib/WebService/Livedoor/Weather.pm',

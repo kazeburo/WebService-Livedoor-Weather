@@ -1,5 +1,8 @@
 Revision history for Perl extension WebService::Livedoor::Weather.
 
+0.04 Tue Apr 16 10:55:08 JST 2013
+        - add Test::Exception as dependency
+
 0.03 Fri Apr 5 17:50:39 2013
         - update for supporting new interface
                 - Livedoor weather API changed its data-format from XML to JSON at April 1st, 2013.
