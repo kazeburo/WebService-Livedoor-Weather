@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use utf8;
 use Carp;
+use Encode;
 use URI::Fetch;
 use XML::Simple;
 use JSON 2;
@@ -53,6 +54,8 @@ sub __parse_forecast {
 
 sub __get_cityid {
     my ($self,$city) = @_;
+
+    $city = decode_utf8($city);
     $city =~ /^\d+$/ ? $city : $self->__forecastmap->{$city} or croak('Invalid city name. cannot find city id with '. $city);
 }
 
@@ -69,6 +72,7 @@ sub __forecastmap {
 sub __parse_forecastmap {
     my ($self, $str) = @_;
 
+    $str = decode_utf8($str);
     my $ref = eval { XMLin($str, ForceArray => [qw[pref area city]]) };
     if ($@) {
         local $Carp::CarpLevel = 1;
@@ -94,15 +98,15 @@ WebService::Livedoor::Weather - Perl interface to Livedoor Weather Web Service
 
   use utf8;
   use WebService::Livedoor::Weather;
-  
+
   binmode STDOUT, ':utf8';
-  
+
   $lwws = WebService::Livedoor::Weather->new;
-  
+
   my $ret = $lwws->get('東京'); # forecast data for Tokyo.
   ### or ...
-  $ret = $lwws->get('130010'); # '130010' is Tokyo's city_id. 
-  
+  $ret = $lwws->get('130010'); # '130010' is Tokyo's city_id.
+
   printf "%s\n---\n%s\n", $ret->{title}, $ret->{description};
 
 =head1 DESCRIPTION
