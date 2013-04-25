@@ -1,4 +1,4 @@
-WebService-Livedoor-Weather version 0.03
+WebService-Livedoor-Weather version 0.05
 ========================================
 
 The README is used to introduce the module and provide instructions on
@@ -33,7 +33,8 @@ COPYRIGHT AND LICENCE
 
 Put the correct copyright and licence information here.
 
-Copyright (C) 2006 by Masahiro Nagano
+Copyright (C) 2006 by Masahiro Nagano 
+Latest Version by Satoshi Azuma & Taiki Kawakami
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself, either Perl version 5.8.5 or,

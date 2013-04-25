@@ -1,4 +1,6 @@
 Revision history for Perl extension WebService::Livedoor::Weather.
+0.05 Thu Apr 25 10:31:33 JST 2013
+        - fix tests that failed about utf8 (moznion)
 
 0.04 Tue Apr 16 10:55:08 JST 2013
         - add Test::Exception as dependency
