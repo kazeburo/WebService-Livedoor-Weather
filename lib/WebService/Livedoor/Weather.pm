@@ -6,7 +6,7 @@ use utf8;
 use Carp;
 use Encode;
 use URI::Fetch;
-use XML::Simple; $XML::Simple::PREFERRED_PARSER = 'XML::Parser';
+use XML::Simple; 
 use JSON 2;
 our $VERSION = '0.05';
 
@@ -70,7 +70,10 @@ sub __forecastmap {
 sub __parse_forecastmap {
     my ($self, $str) = @_;
 
-    my $ref = eval { XMLin($str, ForceArray => [qw[pref area city]]) };
+    my $ref = eval { 
+        local $XML::Simple::PREFERRED_PARSER = 'XML::Parser';
+        XMLin($str, ForceArray => [qw[pref area city]]);
+    };
     if ($@) {
         local $Carp::CarpLevel = 1;
         croak('Oops! failed reading forecastmap: '. $@);
