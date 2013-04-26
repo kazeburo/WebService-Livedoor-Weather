@@ -6,6 +6,7 @@ WriteMakefile(
     PREREQ_PM    => {
         'Encode'          => 0,
         'URI::Fetch'      => 0,
+        'XML::Parser'     => 0,
         'XML::Simple'     => 0,
         'JSON'            => 0,
         'Test::Exception' => 0,

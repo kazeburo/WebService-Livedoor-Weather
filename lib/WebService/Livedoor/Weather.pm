@@ -6,7 +6,7 @@ use utf8;
 use Carp;
 use Encode;
 use URI::Fetch;
-use XML::Simple;
+use XML::Simple; $XML::Simple::PREFERRED_PARSER = 'XML::Parser';
 use JSON 2;
 our $VERSION = '0.05';
 
