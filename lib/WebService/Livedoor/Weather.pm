@@ -54,8 +54,6 @@ sub __parse_forecast {
 
 sub __get_cityid {
     my ($self,$city) = @_;
-
-    $city = decode_utf8($city);
     $city =~ /^\d+$/ ? $city : $self->__forecastmap->{$city} or croak('Invalid city name. cannot find city id with '. $city);
 }
 
@@ -72,7 +70,6 @@ sub __forecastmap {
 sub __parse_forecastmap {
     my ($self, $str) = @_;
 
-    $str = decode_utf8($str);
     my $ref = eval { XMLin($str, ForceArray => [qw[pref area city]]) };
     if ($@) {
         local $Carp::CarpLevel = 1;
