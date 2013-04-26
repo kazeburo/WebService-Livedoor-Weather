@@ -115,6 +115,8 @@ WebService::Livedoor::Weather is a simple interface to Livedoor Weather Web Serv
 
 =head1 METHODS
 
+=over
+
 =item new
 
     $lwws = WebService::Livedoor::Weather->new;
@@ -133,6 +135,8 @@ C<fetch> is option for URI::Fetch that used for fetching weather information.
 
 retrieve weather.
 You can get a city id from http://weather.livedoor.com/forecast/rss/primary_area.xml
+
+=back
 
 =head1 SEE ALSO
 
