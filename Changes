@@ -1,4 +1,8 @@
 Revision history for Perl extension WebService::Livedoor::Weather.
+0.06 Wed May  8 17:54:17 JST 2013
+        - specify XML::Parser as $XML::Simple::PREFFERED_PERSER
+        - remove strange stuff in manifest
+
 0.05 Thu Apr 25 10:31:33 JST 2013
         - fix tests that failed about utf8 (moznion)
 
