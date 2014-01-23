@@ -33,7 +33,6 @@ isa_ok $forecast->{description}, 'HASH';
 my $desc_text = '';
 $desc_text .= $_ while <DATA>;
 $desc_text =~ s/\n\n$//;
-$desc_text = decode_utf8($desc_text);
 is $forecast->{description}{text}, $desc_text;
 is $forecast->{description}{publicTime}, '2013-04-03T13:49:00+0900';
 
@@ -44,15 +43,15 @@ for my $f (@{$forecast->{forecasts}}) {
 }
 
 is_deeply [ map { $_->{dateLabel} } @{ $forecast->{forecasts} } ],
-  [ decode_utf8('今日'), decode_utf8('明日'), decode_utf8('明後日') ];
+  [ '今日', '明日', '明後日' ];
 
 is $forecast->{link}, 'http://weather.livedoor.com/area/forecast/130010';
 
 isa_ok $forecast->{location}, 'HASH';
 is_deeply $forecast->{location}, {
-    city => decode_utf8("東京"),
-    area =>  decode_utf8("関東"),
-    prefecture => decode_utf8("東京都")
+    city       => "東京",
+    area       => "関東",
+    prefecture => "東京都",
 };
 
 isa_ok $forecast->{pinpointLocations}, 'ARRAY';
@@ -64,7 +63,7 @@ for my $p (@{$forecast->{pinpointLocations}}) {
 
 is $forecast->{publicTime}, '2013-04-03T11:00:00+0900';
 
-is $forecast->{title}, decode_utf8('東京都 東京 の天気');
+is $forecast->{title}, '東京都 東京 の天気';
 
 done_testing;
 
