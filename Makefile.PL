@@ -4,7 +4,7 @@ WriteMakefile(
     NAME         => 'WebService::Livedoor::Weather',
     VERSION_FROM => 'lib/WebService/Livedoor/Weather.pm',
     PREREQ_PM    => {
-        'Encode'          => 0,
+        'Encode'          => 2.53,
         'URI::Fetch'      => 0,
         'XML::Parser'     => 0,
         'XML::Simple'     => 0,
