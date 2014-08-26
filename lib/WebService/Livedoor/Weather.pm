@@ -8,7 +8,7 @@ use Encode;
 use URI::Fetch;
 use XML::Simple; 
 use JSON 2;
-our $VERSION = '0.07';
+our $VERSION = '0.08';
 
 use constant BASE_URI        => $ENV{LDWEATHER_BASE_URI} || 'http://weather.livedoor.com';
 use constant ENDPOINT_URI    => $ENV{LDWEATHER_ENDPOINT_URI} || BASE_URI. '/forecast/webservice/json/v1';
@@ -96,18 +96,19 @@ WebService::Livedoor::Weather - Perl interface to Livedoor Weather Web Service
 
 =head1 SYNOPSIS
 
+  use strict;
   use utf8;
   use WebService::Livedoor::Weather;
 
   binmode STDOUT, ':utf8';
 
-  $lwws = WebService::Livedoor::Weather->new;
+  my $lwws = WebService::Livedoor::Weather->new;
 
   my $ret = $lwws->get('東京'); # forecast data for Tokyo.
   ### or ...
   $ret = $lwws->get('130010'); # '130010' is Tokyo's city_id.
 
-  printf "%s\n---\n%s\n", $ret->{title}, $ret->{description};
+  printf "%s\n---\n%s\n", $ret->{title}, $ret->{description}{text};
 
 =head1 DESCRIPTION
 
