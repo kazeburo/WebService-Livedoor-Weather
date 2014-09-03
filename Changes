@@ -1,4 +1,7 @@
 Revision history for Perl extension WebService::Livedoor::Weather.
+0.10 Wed Sep  3 17:53:46 JST 2014
+        - META files: link to GitHub, include license (szabgab)
+
 0.09 Tue Aug 26 10:39:36 JST 2014
         - repackaging
 
