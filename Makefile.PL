@@ -20,4 +20,16 @@ WriteMakefile(
           )
         : ()
     ),
+    (eval { ExtUtils::MakeMaker->VERSION(6.46) } ? (META_MERGE => {
+    'meta-spec' => { version => 2 },
+     resources => {
+         repository => {
+             type => 'git',
+             url  => 'https://github.com/kazeburo/WebService-Livedoor-Weather.git',
+             web  => 'https://github.com/kazeburo/WebService-Livedoor-Weather',
+         },
+     }})
+     : ()
+    ),
+    LICENSE => 'perl',
 );
